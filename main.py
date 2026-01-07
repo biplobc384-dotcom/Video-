@@ -10,7 +10,7 @@ from flask import Flask
 from datetime import datetime, timedelta
 
 # --- কনফিগারেশন ---
-API_TOKEN = '8302172779:AAFfpJDQtqPNptFoGp_XfeliqBWrrwsOtUw'   # আপনার বটের টোকেন
+API_TOKEN = '8302172779:AAH6OuORRGFkRXTp9DC3--U1JbjoSxU-H8w'   # আপনার বটের টোকেন
 ADMIN_ID = 6740599881               # আপনার অ্যাডমিন আইডি
 ADMIN_USERNAME = 'Arifur905'
 REQUIRED_CHANNEL = '@ArifurHackworld' # আপনার চ্যানেল
