@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 # --- কনফিগারেশন ---
 API_TOKEN = '8302172779:AAFfpJDQtqPNptFoGp_XfeliqBWrrwsOtUw'   # আপনার বটের টোকেন
 ADMIN_ID = 6740599881               # আপনার অ্যাডমিন আইডি
+ADMIN_USERNAME = 'Arifur905'
 REQUIRED_CHANNEL = '@ArifurHackworld' # আপনার চ্যানেল
 DOWNLOAD_COST = 5                   # ভিডিও ডাউনলোডের খরচ
 REFERRAL_BONUS = 50                 # রেফার বোনাস
@@ -185,7 +186,8 @@ def handle_text(m):
         bot.reply_to(m, "লিখুন: `ID Amount`\nযেমন: `12345 50`")
         user_state[user_id] = {'type': 'transfer'}
 
-    elif user_state.get(user_id, {}).get('type') == 'transfer':
+    # ফিক্স: NoneType এরর সমাধান করা হয়েছে
+    elif user_state.get(user_id) and user_state[user_id].get('type') == 'transfer':
         try:
             tid, amt = map(int, text.split())
             if bal >= amt and amt >= 10:
@@ -200,7 +202,7 @@ def handle_text(m):
                 conn.close()
             else: bot.reply_to(m, "❌ ব্যালেন্স নেই বা পরিমাণ কম।")
         except: bot.reply_to(m, "❌ ভুল ফরম্যাট।")
-        user_state[user_id] = None
+        user_state.pop(user_id, None) # স্টেট ক্লিয়ার করা হচ্ছে
 
     elif text == "👥 রেফার":
         link = f"https://t.me/{bot.get_me().username}?start={user_id}"
@@ -220,7 +222,24 @@ def handle_text(m):
     elif text == "📂 রিস্টোর" and user_id == ADMIN_ID:
         msg = bot.reply_to(m, "`users.db` ফাইলটি দিন:")
         bot.register_next_step_handler(msg, restore_db)
-        
+    
+    elif text == "📢 ব্রডকাস্ট" and user_id == ADMIN_ID:
+        msg = bot.reply_to(m, "মেসেজটি লিখুন:")
+        user_state[user_id] = {'type': 'broadcast'}
+
+    elif user_state.get(user_id) and user_state[user_id].get('type') == 'broadcast':
+        conn = sqlite3.connect('users.db')
+        users = conn.execute("SELECT user_id FROM users").fetchall()
+        conn.close()
+        count = 0
+        for u in users:
+            try:
+                bot.send_message(u[0], f"📢 <b>নোটিশ:</b>\n{text}", parse_mode="HTML")
+                count += 1
+            except: pass
+        bot.reply_to(m, f"✅ পাঠানো হয়েছে: {count} জন")
+        user_state.pop(user_id, None)
+
     elif text == "🔙 ব্যাক":
         bot.reply_to(m, "মেনু:", reply_markup=main_menu(user_id))
 
@@ -334,3 +353,4 @@ if __name__ == "__main__":
     t.start()
     print("🚀 Super Fast Bot Started...")
     bot.infinity_polling()
+    
