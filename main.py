@@ -10,7 +10,7 @@ from flask import Flask, send_from_directory, render_template_string
 from datetime import datetime
 
 # --- কনফিগারেশন ---
-API_TOKEN = '8302172779:AAHLhBP1IVGm689BRXc741ui2-dbyoNfu5Y'
+API_TOKEN = '8302172779:AAGZMbcQoITVviIrIoWFcqMlFp5PMH7Z_QM'
 ADMIN_ID = 6740599881
 ADMIN_USERNAME = 'Arifur905'
 REQUIRED_CHANNEL = '@ArifurHackworld'
